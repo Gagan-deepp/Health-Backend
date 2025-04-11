@@ -109,3 +109,41 @@ export const deleteUser = async (req, res, next) => {
     }
 }
 
+export const searchUser = async (req, res, next) => {
+    try {
+        const searchTerm = req.query.search || ""
+        const limit = parseInt(req.query.limit) || 10
+        const page = parseInt(req.query.page) || 1
+
+        console.debug("Searching user by name ==> ", searchTerm)
+        const skip = (page - 1) * limit
+        const searchQuery = searchTerm
+            ? { $text: { $search: searchTerm } }
+            : {}
+
+        console.debug("Search query ==> ", searchQuery)
+
+        const [users, totalDocs] = await Promise.all([User.find(searchQuery).limit(limit).skip(skip), User.countDocuments(searchQuery)])
+
+        console.debug("Users after searching ==> ", users)
+        console.debug("Total number of docs ==> ", totalDocs)
+
+        return res.status(201).send({
+            success: true,
+            message: "Users fetched successfully",
+            data: {
+                users,
+                pagination: {
+                    totalPage: Math.ceil(totalDocs / limit),
+                    page,
+                    limit,
+                    hasMore: totalDocs > skip + users.length
+                }
+            }
+        })
+
+    } catch (error) {
+        console.error("Error searching user ==> ", error)
+        next(error)
+    }
+}

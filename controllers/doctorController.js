@@ -132,4 +132,42 @@ export const updateDoctor = async (req, res) => {
             message: error.message
         })
     }
-}   
+}
+
+export const searchDoctor = async (req, res, next) => {
+    try {
+        console.debug("Req query params ==> ", req.query)
+        const searchTerm = req.query.search || ""
+        const limit = parseInt(req.query.limit) || 10
+        const page = parseInt(req.query.page) || 1
+
+        const skip = (page - 1) * limit
+        console.debug("Search term in doctor's search ==> ", searchTerm)
+
+        const query = searchTerm ? { $text: { $search: searchTerm } } : {}
+
+        console.debug("Search query ==> ", query)
+
+        const [doctors, totalDocs] = await Promise.all([Doctor.find(query).skip(skip).limit(limit), Doctor.countDocuments(query)])
+
+        console.debug("Doctors after search ==> ", doctors)
+        console.debug("Total no of search result ==> ", totalDocs)
+
+        return res.status(201).send({
+            success: true,
+            message: "Doctor fetched successfully !!",
+            data: {
+                doctors,
+                pagination: {
+                    limit,
+                    skip,
+                    totalPage: Math.ceil(totalDocs / limit),
+                }
+            }
+        })
+
+    } catch (error) {
+        console.error(error)
+        next(error)
+    }
+}
