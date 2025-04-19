@@ -2,9 +2,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { connectDB } from "./lib/database.js";
+import { errorHandler } from "./middleware/ErrorHandle.js";
+import { appointMentRouter } from "./router/appointRouter.js";
 import { docRouter } from "./router/doctorRouter.js";
 import { userRouter } from "./router/userRouter.js";
-import { errorHandler } from "./middleware/ErrorHandle.js";
 
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(express.json());
 //Router
 app.use("/api/v1/doctor", docRouter)
 app.use("/api/v1/user", userRouter)
+app.use("/api/v1/appointment", appointMentRouter)
 
 app.use(errorHandler)
 

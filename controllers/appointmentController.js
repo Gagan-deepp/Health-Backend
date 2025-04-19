@@ -29,10 +29,10 @@ export const createAppointMent = async (req, res) => {
 }
 
 export const getAppointmentByID = async (req, res) => {
-    console.debug("Searching Appointment ==> ", req.body)
+    console.debug("Searching Appointment ==> ", req.params)
     try {
-        const { id } = req.body
-        const appointment = await Appointment.findById(id)
+        const { id } = req.params
+        const appointment = await Appointment.findById(id).populate('doctor', 'name email phone').populate('patient', 'name email phone')
         if (!appointment) {
             console.error("No appointment found with ID ==> ", id)
             return res.status(400).send({
@@ -56,18 +56,58 @@ export const getAppointmentByID = async (req, res) => {
     }
 }
 
-
 export const updateAppointment = async (req, res) => {
+    console.debug("Request ID to update ==> ", req.params)
     try {
+        const { id } = req.params
+        const { doctor, patient, appointmentDateTime } = req.body
 
+        console.debug("Updating appointment with details ==> ", req.body)
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(id, { doctor, patient, appointmentDateTime }, { new: true })
+
+        console.debug("Updated Appointment ==> ", updatedAppointment)
+        return res.status(201).send({
+            message: `Appointment updated successfully`,
+            data: updatedAppointment,
+            success: "success"
+        })
     } catch (error) {
-        console.debug("Error while Updating appointment => ", error)
+        console.error("Error while Updating appointment => ", error)
+        return res.status(500).send({
+            message: "Failed to update appointment",
+            success: false
+        })
     }
 }
 export const deleteAppointMent = async (req, res) => {
+    console.debug("Request ID to delete ==> ", req.params)
     try {
+        const { id } = req.params
+
+        console.debug("Deleting appointment id ==> ", id)
+
+        const deletedAppointment = await Appointment.findByIdAndDelete(id)
+        console.debug("Deleted Appointment ==> ", deletedAppointment)
+
+        if (!deleteAppointMent) {
+            return res.status(401).send({
+                success: false,
+                message: "Appointment not found"
+            })
+        }
+
+        return res.status(200).send({
+            success: true,
+            message: "Appointment deleted successfully",
+            data: deletedAppointment
+        })
 
     } catch (error) {
-        console.debug("Error while deleting appointment => ", error)
+        console.error("Error while deleting appointment => ", error)
+        return res.status(500).send({
+            message: "Failed to delete appointment",
+            success: false
+        })
     }
 }
