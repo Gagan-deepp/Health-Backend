@@ -45,7 +45,7 @@ export const getDoctorById = async (req, res) => {
         const { id } = req.params
         console.debug("Id for request user ==> ", id)
 
-        const doctor = await Doctor.findById(id)
+        const doctor = await Doctor.findById(id).select("-appointment")
 
         console.debug(`Doctor for id : ${id} ==> `, doctor)
 
@@ -148,7 +148,7 @@ export const searchDoctor = async (req, res, next) => {
 
         console.debug("Search query ==> ", query)
 
-        const [doctors, totalDocs] = await Promise.all([Doctor.find(query).skip(skip).limit(limit), Doctor.countDocuments(query)])
+        const [doctors, totalDocs] = await Promise.all([Doctor.find(query).skip(skip).limit(limit).select("-appointment"), Doctor.countDocuments(query)])
 
         console.debug("Doctors after search ==> ", doctors)
         console.debug("Total no of search result ==> ", totalDocs)
