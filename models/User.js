@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
         },
         default: 'patient',
     },
+    photoUrl : {
+        type : String,
+        trim : true,
+    },
 });
 
 userSchema.index({ name: 'text', email: 'text' });

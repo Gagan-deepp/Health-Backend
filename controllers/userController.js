@@ -2,7 +2,7 @@ import { User } from "../models/User.js"
 
 export const createUser = async (req, res, next) => {
     try {
-        const { name, email, phone } = req.body
+        const { name, email, phone, photoUrl, role } = req.body
         console.debug("Creating user ==> ", req.body)
 
         if (!name || !email || !phone) {
@@ -19,7 +19,7 @@ export const createUser = async (req, res, next) => {
                 message: "User already exists with this email or phone"
             })
         }
-        const user = await User.create({ name, email, phone })
+        const user = await User.create({ name, email, phone, photoUrl, role })
 
         console.debug("User created successfully ==> ", user)
 
@@ -65,9 +65,9 @@ export const updateUser = async (req, res, next) => {
         const { id } = req.params
         console.debug("Updating user by id ==> ", id)
 
-        const { name, email, phone } = req.body
+        const { name, email, phone, photoUrl, role } = req.body
 
-        const user = await User.findByIdAndUpdate(id, { name, email, phone }, { new: true })
+        const user = await User.findByIdAndUpdate(id, { name, email, phone, photoUrl, role }, { new: true })
 
         console.debug("User updated successfully ==> ", user)
         if (!user) {

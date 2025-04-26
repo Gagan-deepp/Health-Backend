@@ -17,6 +17,10 @@ const doctorSchema = new mongoose.Schema({
         required: [true, "Phone no is required"],
         unique: true,
     },
+    photoUrl: {
+        type: String,
+        trim: true,
+    },
     role: {
         type: String,
         lowercase: true,

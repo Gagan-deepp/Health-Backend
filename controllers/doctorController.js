@@ -2,7 +2,7 @@ import { Doctor } from "../models/Doctor.js";
 
 export const createDoctor = async (req, res) => {
     try {
-        const { name, email, phone } = req.body;
+        const { name, email, phone, photoUrl, role } = req.body;
 
         if (!name || !email || !phone) {
             return res.status(400).send({
@@ -22,7 +22,7 @@ export const createDoctor = async (req, res) => {
             });
         }
 
-        const doctor = await Doctor.create({ name, email, phone, role: "doctor" });
+        const doctor = await Doctor.create({ name, email, phone, photoUrl, role });
 
         return res.status(201).send({
             success: true,
@@ -106,7 +106,7 @@ export const updateDoctor = async (req, res) => {
         const { id } = req.params
         console.debug("Id for updating doctor ==> ", id)
 
-        const { name, email, phone } = req.body
+        const { name, email, phone, photoUrl, role } = req.body
 
         if (!name || !email || !phone) {
             return res.status(400).send({
@@ -115,7 +115,7 @@ export const updateDoctor = async (req, res) => {
             })
         }
 
-        const doctor = await Doctor.findByIdAndUpdate(id, { name, email, phone }, { new: true })
+        const doctor = await Doctor.findByIdAndUpdate(id, { name, email, phone, photoUrl, role }, { new: true })
 
         console.debug("Updated doctor ==> ", doctor)
 
