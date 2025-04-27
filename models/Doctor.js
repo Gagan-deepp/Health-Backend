@@ -25,10 +25,6 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         lowercase: true,
         trim: true,
-        enum: {
-            values: ['patient', 'doctor'],
-            message: '{VALUE} is not a valid role here',
-        },
         default: 'doctor',
     },
     review: [{
