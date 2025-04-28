@@ -62,7 +62,7 @@ export const getUserById = async (req, res, next) => {
 export const getUserByMail = async (req, res, next) => {
     try {
         const { mail } = req.body
-        console.debug("Getting user by mail ==> ", mail)
+        console.debug("Getting user by mail ==> ", req.body)
 
         const user = await User.findOne({ email: mail })
 

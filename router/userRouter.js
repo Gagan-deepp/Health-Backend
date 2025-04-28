@@ -4,8 +4,8 @@ import { createUser, deleteUser, getUserById, getUserByMail, searchUser, updateU
 export const userRouter = Router()
 
 userRouter.post("/create", createUser)
-userRouter.get("/:id", getUserById)
-userRouter.get("/mail", getUserByMail)
-userRouter.get("/", searchUser)
 userRouter.put("/:id", updateUser)
+userRouter.get("/", searchUser)
+userRouter.get("/mail", getUserByMail)
+userRouter.get("/:id", getUserById)
 userRouter.delete("/:id", deleteUser)
