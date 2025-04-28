@@ -59,6 +59,31 @@ export const getUserById = async (req, res, next) => {
         next(error)
     }
 }
+export const getUserByMail = async (req, res, next) => {
+    try {
+        const { mail } = req.body
+        console.debug("Getting user by mail ==> ", mail)
+
+        const user = await User.findOne({ email: mail })
+
+        console.debug("User found ==> ", user)
+
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        return res.status(200).send({
+            success: true,
+            message: "User found",
+            data: user._id
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 export const updateUser = async (req, res, next) => {
     try {

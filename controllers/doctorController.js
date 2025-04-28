@@ -69,6 +69,36 @@ export const getDoctorById = async (req, res) => {
         })
     }
 }
+export const getDoctorByMail = async (req, res) => {
+    try {
+
+        const { mail } = req.body
+        console.debug("Email for request user ==> ", mail)
+
+        const doctor = await Doctor.findOne({ email: mail })
+
+        console.debug(`Doctor for mail : ${mail} ==> `, doctor)
+
+        if (!doctor) {
+            return res.status(409).send({
+                success: false,
+                message: "Doctor not Found"
+            })
+        }
+
+        return res.status(201).send({
+            success: true,
+            data: doctor._id
+        })
+
+    } catch (error) {
+        console.error("Error while getting doctor ==> ", error)
+        return res.status(501).send({
+            success: false,
+            message: error.message
+        })
+    }
+}
 
 export const deleteDoctor = async (req, res) => {
     try {
