@@ -72,7 +72,7 @@ export const getDoctorById = async (req, res) => {
 export const getDoctorByMail = async (req, res) => {
     try {
 
-        const { mail } = req.body
+        const { mail } = req.params
         console.debug("Email for request user ==> ", mail)
 
         const doctor = await Doctor.findOne({ email: mail })
