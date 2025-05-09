@@ -7,8 +7,8 @@ export const docRouter = Router()
 docRouter.post("/create", createDoctor)
 docRouter.put("/:id", updateDoctor)
 docRouter.get("/", searchDoctor)
-docRouter.get("/:mail", getDoctorByMail)
 docRouter.get("/:id", getDoctorById)
+docRouter.get("/mail/:mail", getDoctorByMail)
 docRouter.delete("/:id", deleteDoctor)
 
 
