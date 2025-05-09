@@ -90,7 +90,7 @@ export const getDoctorByMail = async (req, res) => {
         console.debug(`Doctor for mail : ${mail} ==> `, doctor)
 
         if (!doctor) {
-            return res.status(409).send({
+            return res.status(201).send({
                 success: false,
                 message: "Doctor not Found"
             })
