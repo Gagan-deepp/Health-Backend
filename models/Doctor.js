@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+const reviewSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    rating: { type: Number, min: 1, max: 5 },
+    content: { type: String, trim: true }
+}, { _id: true });
+
 const doctorSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -27,26 +33,26 @@ const doctorSchema = new mongoose.Schema({
         trim: true,
         default: 'doctor',
     },
-    review: [{
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        rating: {
-            type: Number,
-            min: [1, 'Minimum rating is 1'],
-            max: [5, 'Maximum rating is 1'],
-        },
-        content: {
-            type: String,
-            trim: true
-        }
-    }],
+    review: [reviewSchema],
+    avg_Rating: {
+        type: Number,
+        default: 0
+    },
     appointment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment'
     }]
 });
+
+doctorSchema.methods.calculateAvgRating = function () {
+    if (this.review.length === 0) {
+        this.avg_Rating = 0;
+    } else {
+        const total = this.review.reduce((sum, r) => sum + r.rating, 0);
+        this.avg_Rating = total / this.review.length;
+    }
+    return this.save();
+}
 
 doctorSchema.index({ name: 'text', email: 'text' });
 

@@ -1,6 +1,10 @@
 import { Doctor } from "../models/Doctor.js";
+import mongoose from "mongoose";
 
+//Added Transaction in creating
 export const createDoctor = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
         const { name, email, phone, photoUrl, role } = req.body;
 
@@ -13,16 +17,20 @@ export const createDoctor = async (req, res) => {
 
         const existingDoctor = await Doctor.findOne({
             $or: [{ email }, { phone }]
-        });
+        }).session(session);
 
         if (existingDoctor) {
+            await session.abortTransaction();
             return res.status(409).send({
                 success: false,
                 message: "Doctor already exists with this email or phone"
             });
         }
 
-        const doctor = await Doctor.create({ name, email, phone, photoUrl, role });
+        const doctor = await Doctor.create([{ name, email, phone, photoUrl, role }], { session });
+
+        await session.commitTransaction(); //Success
+        session.endSession()
 
         return res.status(201).send({
             success: true,
@@ -32,6 +40,8 @@ export const createDoctor = async (req, res) => {
 
     } catch (error) {
         console.error("Error while creating doctor ==> ", error)
+        await session.abortTransaction();
+        session.endSession()
         return res.status(501).send({
             success: false,
             message: error.message
