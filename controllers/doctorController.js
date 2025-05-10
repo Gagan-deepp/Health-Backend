@@ -55,7 +55,7 @@ export const getDoctorById = async (req, res) => {
         const { id } = req.params
         console.debug("Id for request user ==> ", id)
 
-        const doctor = await Doctor.findById(id).select("-appointment")
+        const doctor = await Doctor.findById(id)
 
         console.debug(`Doctor for id : ${id} ==> `, doctor)
 
