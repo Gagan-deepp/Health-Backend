@@ -172,3 +172,92 @@ export const searchUser = async (req, res, next) => {
         next(error)
     }
 }
+
+// =================== User Favourite ====================
+
+export const addFavourite = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        console.debug("User Id in which favourite doctor is added ==> ", id)
+        const { doctorId } = req.body
+        console.debug("Doctor Id which is added to favourite ==> ", doctorId)
+
+        const user = await User.findById(id)
+        console.debug("User ==> ", user)
+
+        if (!user) {
+            console.error("User not found")
+            return res.status(404).send({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        if (user.favourite.includes(doctorId)) {
+            console.debug("Doctor already in favourite")
+            return res.status(400).send({
+                success: false,
+                message: "Doctor already in favourite"
+            })
+        }
+
+        user.favourite.push(doctorId)
+        await user.save()
+
+        const updatedUser = await User.findById(id).populate('favourite', 'name email photoUrl avg_Rating');
+        console.debug("Doctor added to favourite successfully")
+
+        return res.status(200).send({
+            success: true,
+            message: "Doctor added to favourite",
+            data: updatedUser
+        })
+    } catch (error) {
+        console.error("Error while adding doctor in favourite ==> ", error)
+        next(error)
+    }
+}
+
+export const removeFavourite = async(req,res,next)=>{
+    try {
+        const { id } = req.params
+        console.debug("User Id in which favourite doctor is removed ==> ", id)
+        const { doctorId } = req.body
+        console.debug("Doctor Id which is removed from favourite ==> ", doctorId)
+
+        const user = await User.findById(id)
+        console.debug("User ==> ", user)
+
+        if (!user) {
+            console.error("User not found")
+            return res.status(404).send({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        if (!user.favourite.includes(doctorId)) {
+            console.debug("Doctor not in favourite")
+            return res.status(400).send({
+                success: false,
+                message: "Doctor not in favourite"
+            })
+        }
+
+        user.favourite.pull(doctorId)
+        await user.save()
+
+        const updatedUser = await User.findById(id).populate('favourite', 'name email photoUrl avg_Rating');
+        console.debug("Doctor removed from favourite successfully")
+        console.debug("\n Updated User ==> ", updatedUser)
+
+        return res.status(200).send({
+            success: true,
+            message: "Doctor removed from favourite",
+            data: updatedUser
+        })
+    } catch (error) {
+        console.error("Error while removing doctor from favourite ==> ", error)
+        next(error)
+    }
+}

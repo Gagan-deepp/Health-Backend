@@ -19,15 +19,19 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
     },
+    favourite: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Doctor'
+    }],
     role: {
         type: String,
         lowercase: true,
         trim: true,
         default: 'patient',
     },
-    photoUrl : {
-        type : String,
-        trim : true,
+    photoUrl: {
+        type: String,
+        trim: true,
     },
 });
 

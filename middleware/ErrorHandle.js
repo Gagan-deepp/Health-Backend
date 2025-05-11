@@ -1,5 +1,4 @@
 export const errorHandler = (err, req, res, next) => {
-    console.error("Error in middleware ==> ", err);
 
     // Default error response
     let statusCode = 500;

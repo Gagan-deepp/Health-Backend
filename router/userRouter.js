@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, deleteUser, getUserById, getUserByMail, searchUser, updateUser } from "../controllers/userController.js";
+import { addFavourite, createUser, deleteUser, getUserById, getUserByMail, removeFavourite, searchUser, updateUser } from "../controllers/userController.js";
 
 export const userRouter = Router()
 
@@ -9,3 +9,8 @@ userRouter.get("/", searchUser)
 userRouter.get("/mail/:mail", getUserByMail)
 userRouter.get("/:id", getUserById)
 userRouter.delete("/:id", deleteUser)
+
+
+// User Favourite router
+userRouter.post("/favourite/:id", addFavourite)
+userRouter.delete("/favourite/:id", removeFavourite)
