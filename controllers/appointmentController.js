@@ -60,11 +60,22 @@ export const updateAppointment = async (req, res) => {
     console.debug("Request ID to update ==> ", req.params)
     try {
         const { id } = req.params
-        const { doctor, patient, appointmentDateTime } = req.body
+        const { doctor, patient, appointmentDateTime, status } = req.body
 
         console.debug("Updating appointment with details ==> ", req.body)
 
-        const updatedAppointment = await Appointment.findByIdAndUpdate(id, { doctor, patient, appointmentDateTime }, { new: true })
+        const isExistAppoint = await Appointment.findById(id);
+
+        console.debug("Appointment found ==> ", isExistAppoint)
+
+        if (!isExistAppoint) {
+            return res.status(400).send({
+                message: "Appointment not found",
+                success: false
+            })
+        }
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(id, { doctor, patient, appointmentDateTime, status }, { new: true })
 
         console.debug("Updated Appointment ==> ", updatedAppointment)
         return res.status(201).send({
@@ -90,7 +101,7 @@ export const deleteAppointMent = async (req, res) => {
         const deletedAppointment = await Appointment.findByIdAndDelete(id)
         console.debug("Deleted Appointment ==> ", deletedAppointment)
 
-        if (!deleteAppointMent) {
+        if (!deletedAppointment) {
             return res.status(401).send({
                 success: false,
                 message: "Appointment not found"

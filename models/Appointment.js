@@ -12,6 +12,15 @@ const appointMentSchema = new mongoose.Schema({
     appointmentDateTime: {
         type: Date,
         required: [true, "Appointment Date and time required"]
+    },
+    status : {
+        type : String,
+        enum : {
+            values : ["pending" , "accepted", "completed", "rejected"],
+            message : `{VALUE} is not a valid role`
+        },
+        default : "pending",
+
     }
 }, { timestamps: true })
 
