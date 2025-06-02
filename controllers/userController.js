@@ -1,3 +1,4 @@
+import { Appointment } from "../models/Appointment.js"
 import { User } from "../models/User.js"
 
 export const createUser = async (req, res, next) => {
@@ -218,7 +219,7 @@ export const addFavourite = async (req, res, next) => {
     }
 }
 
-export const removeFavourite = async(req,res,next)=>{
+export const removeFavourite = async (req, res, next) => {
     try {
         const { id } = req.params
         console.debug("User Id in which favourite doctor is removed ==> ", id)
@@ -258,6 +259,26 @@ export const removeFavourite = async(req,res,next)=>{
         })
     } catch (error) {
         console.error("Error while removing doctor from favourite ==> ", error)
+        next(error)
+    }
+}
+
+export const getUserAppointment = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+        console.debug("Patient id in appointment ==> ", id)
+        const appointments = await Appointment.find({ patient: id }).populate('patient', 'name email phone photoUrl')
+        
+        console.debug("Appointment of user ==> ", appointments)
+        return res.status(200).send({
+            success: true,
+            message: "Appointment Found Successfully",
+            data: appointments
+        })
+
+    } catch (error) {
+        console.error("Error while getting patient appointment ==> ", error)
         next(error)
     }
 }
