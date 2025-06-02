@@ -32,7 +32,7 @@ export const getAppointmentByID = async (req, res) => {
     console.debug("Searching Appointment ==> ", req.params)
     try {
         const { id } = req.params
-        const appointment = await Appointment.findById(id).populate('doctor', 'name email phone').populate('patient', 'name email phone')
+        const appointment = await Appointment.findById(id).populate('doctor', 'name email phone photoUrl').populate('patient', 'name email phone')
         if (!appointment) {
             console.error("No appointment found with ID ==> ", id)
             return res.status(400).send({
